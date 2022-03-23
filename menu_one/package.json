@@ -1,0 +1,26 @@
+{
+  "name": "menu_one",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Menu.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavelerokhin/little-menu.git"
+  },
+  "keywords": [
+    "a",
+    "menu",
+    "from",
+    "the",
+    "repo"
+  ],
+  "author": "Pavel Erokhin, UnioneCreativa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pavelerokhin/little-menu/issues"
+  },
+  "homepage": "https://github.com/pavelerokhin/little-menu#readme"
+}

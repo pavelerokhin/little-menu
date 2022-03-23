@@ -1,8 +1,10 @@
+"use  strict";
+
 class Menu {
   constructor({
     menuContainerId,
     items,
-    activeMenuItemClassname = "menu-ative-item",
+    activeMenuItemClassname = "menu-item-active",
     menuItemClassname = "menu-item",
   }) {
     if (!menuContainerId) {
@@ -11,57 +13,86 @@ class Menu {
     }
 
     this.menu = document.getElementById(menuContainerId);
-    if (!menu) {
+    if (!this.menu) {
       console.error(
         "no menu container with id ${menuContainerId} found in DOM"
       );
       return;
     }
-    this._styleMenu();
 
     if (!items) {
       console.error("no menu items specified");
       return;
     }
-    this.items = items;
+
     this.activeMenuItemClassname = activeMenuItemClassname;
     this.menuItemClassname = menuItemClassname;
+    this.items = this._initItems(items);
 
     this._appendItems();
   }
+
   _appendItems() {
-    this.items.forEach((it, order) => {
-      if (!it.href || !it.caption) {
+    let order = Object.keys(this.items).sort();
+
+    for (let i of order) {
+      this.menu.appendChild(this.items[i].dom);
+    }
+  }
+
+  _initItems(items) {
+    let itemsConfig = {};
+
+    items.forEach((item, order) => {
+      if (!item.href || !item.caption) {
         console.warn(`necessary info missing for menu item #${order}`);
-        continue;
+        return;
       }
-      let item = document.createElement("a");
-      item.classList.push(menuItemClassname);
+
+      let type = this._tryHref(item.href);
+      if (!type) {
+        console.warn(
+          `problem to associate href ${item.href} to the menu item #${order}`
+        );
+        return;
+      }
+
+      // configure DOM element of menu-item
+      let itemDOM = document.createElement("a");
+      let id = `menu-item-${order}`;
+      itemDOM.classList.add(this.menuItemClassname);
+      itemDOM.id = id;
+      itemDOM.innerText = item.caption;
       if (order == 0) {
-        item.classList.push(activeMenuItemClassname);
+        itemDOM.classList.add(this.activeMenuItemClassname);
       }
 
-      item.href = i.href;
-      item.innerText = i.caption;
-
-      menu.appendChild(item);
+      itemsConfig[order] = {
+        dom: itemDOM,
+        caption: item.caption,
+        href: item.href,
+        id: `menu-item-${order}`,
+        type: type,
+      };
     });
+
+    return itemsConfig;
   }
 
-  _styleMenu() {
-    this.menu.cssText = `
-		display: flex;
-		flex-direction: column;
-		position: fixed;
-		`;
+  _tryHref(href) {
+    let sectionTry = document.getElementById(href.slice(1));
+    if (sectionTry) {
+      return "intern";
+    } else if (href.startsWith("http") || href.startsWith("www")) {
+      return "extern";
+    }
+    return undefined;
   }
 
-  _sectionYs() {
-    let sections = Array.prototype.slice.call(
-      document.getElementsByTagName("section")
-    );
-    sections.forEach((x) => {
-      sectionY.push(x.offsetTop);
-    });
+  init() {}
+
+  _getSectionY(href, id) {
+    let section = document.getElementById(href);
+    this.Ys.push({ id: id, y: section.offsetTop });
   }
 }
