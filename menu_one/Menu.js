@@ -4,7 +4,7 @@ class Menu {
   constructor({
     menuContainerId,
     items,
-    activeMenuItemClassname = "menu-ative-item",
+    activeMenuItemClassname = "menu-item-active",
     menuItemClassname = "menu-item",
   }) {
     if (!menuContainerId) {
@@ -19,7 +19,6 @@ class Menu {
       );
       return;
     }
-    this._styleMenu();
 
     if (!items) {
       console.error("no menu items specified");
@@ -63,10 +62,10 @@ class Menu {
       let id = `menu-item-${order}`;
       itemDOM.classList.add(this.menuItemClassname);
       itemDOM.id = id;
+      itemDOM.innerText = item.caption;
       if (order == 0) {
         itemDOM.classList.add(this.activeMenuItemClassname);
       }
-      this._styleMenuItem(itemDOM);
 
       itemsConfig[order] = {
         dom: itemDOM,
@@ -78,24 +77,6 @@ class Menu {
     });
 
     return itemsConfig;
-  }
-
-  _styleMenu() {
-    this.menu.cssText = `
-		display: flex;
-		flex-direction: column;
-		position: fixed;
-		height: content-min;
-		width: content-min;
-		`;
-  }
-
-  _styleMenuItem(item) {
-    item.cssText = `
-		display: block;
-		height: content-min;
-		width: content-min;
-		`;
   }
 
   _tryHref(href) {

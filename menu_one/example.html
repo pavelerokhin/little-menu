@@ -48,6 +48,40 @@
         color: black;
       }
     </style>
+
+    <style>
+      .menu-item {
+        color: white;
+        font-family: Helvetica;
+      }
+
+      .menu-item-active {
+        color: red;
+      }
+
+      .menu-item-active:not(::first-child),
+      .menu-item-active:not(::last-child) {
+        margin: 5px 0;
+      }
+      .menu-item-active:first-child {
+        margin-bottom: 5px;
+      }
+      .menu-item-active:last-child {
+        margin-top: 5px;
+      }
+
+      #menu {
+        border: 1px solid white;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        position: fixed;
+        right: 10px;
+        top: 10px;
+        width: max-content;
+        height: max-content;
+      }
+    </style>
   </head>
   <body>
     <div id="menu"></div>
