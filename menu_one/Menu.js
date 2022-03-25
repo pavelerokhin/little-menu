@@ -30,6 +30,7 @@ class Menu {
     this.items = this._initItems(items);
 
     this._appendItems();
+    this.sectionYs = [];
   }
 
   _appendItems() {
@@ -79,20 +80,36 @@ class Menu {
     return itemsConfig;
   }
 
+  _toggleAtiveItem() {
+    console.log("scroll");
+  }
+
   _tryHref(href) {
     let sectionTry = document.getElementById(href.slice(1));
     if (sectionTry) {
-      return "intern";
+      return "internal";
     } else if (href.startsWith("http") || href.startsWith("www")) {
-      return "extern";
+      return "external";
     }
     return undefined;
   }
 
-  init() {}
+  init() {
+    this._getSectionYs();
 
-  _getSectionY(href, id) {
-    let section = document.getElementById(href);
-    this.Ys.push({ id: id, y: section.offsetTop });
+    window.addEventListener("resize", _getSectionYs);
+    window.addEventListener("scroll", _toggleAtiveItem);
+  }
+
+  _getSectionYs() {
+    console.log("scroll");
+
+    this.sectionYs = [];
+    for (let i of this.items) {
+      if (i.type == "internal") {
+        let section = document.getElementById(i.href);
+        this.sectionYs.push({ id: i.id, y: section.offsetTop });
+      }
+    }
   }
 }
