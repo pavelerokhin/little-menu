@@ -30,7 +30,6 @@ class Menu {
     this.items = this._initItems(items);
 
     this._appendItems();
-    this.sectionYs = [];
   }
 
   _appendItems() {
@@ -81,7 +80,20 @@ class Menu {
   }
 
   _toggleAtiveItem() {
-    console.log("scroll");
+    let yetToggled = false;
+
+    for (let key of Object.keys(this.items)) {
+      let item = this.items[key];
+      if (item.type != "internal") {
+        continue;
+      }
+      if (window.pageYOffset > item.sectionY) {
+        item.dom.classList.add(this.activeMenuItemClassname);
+        yetToggled = true;
+      } else {
+        item.dom.classList.remove(this.activeMenuItemClassname);
+      }
+    }
   }
 
   _tryHref(href) {
@@ -97,18 +109,16 @@ class Menu {
   init() {
     this._getSectionYs();
 
-    window.addEventListener("resize", _getSectionYs);
-    window.addEventListener("scroll", _toggleAtiveItem);
+    window.addEventListener("resize", this._getSectionYs.bind(this));
+    window.addEventListener("scroll", this._toggleAtiveItem.bind(this));
   }
 
   _getSectionYs() {
-    console.log("scroll");
-
-    this.sectionYs = [];
-    for (let i of this.items) {
-      if (i.type == "internal") {
-        let section = document.getElementById(i.href);
-        this.sectionYs.push({ id: i.id, y: section.offsetTop });
+    for (let key of Object.keys(this.items)) {
+      let item = this.items[key];
+      if (item.type == "internal") {
+        let section = document.querySelector(item.href);
+        item["sectionY"] = section.offsetTop;
       }
     }
   }
