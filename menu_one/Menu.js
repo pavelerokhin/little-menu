@@ -33,15 +33,13 @@ class Menu {
   }
 
   _appendItems() {
-    let order = Object.keys(this.items).sort();
-
-    for (let i of order) {
-      this.menu.appendChild(this.items[i].dom);
-    }
+    this.items.forEach((i) => {
+      this.menu.appendChild(i.dom);
+    });
   }
 
   _initItems(items) {
-    let itemsConfig = {};
+    let itemsConfig = [];
 
     items.forEach((item, order) => {
       if (!item.href || !item.caption) {
@@ -67,33 +65,44 @@ class Menu {
         itemDOM.classList.add(this.activeMenuItemClassname);
       }
 
-      itemsConfig[order] = {
+      itemsConfig.push({
         dom: itemDOM,
         caption: item.caption,
         href: item.href,
         id: `menu-item-${order}`,
         type: type,
-      };
+      });
     });
 
     return itemsConfig;
   }
 
   _toggleAtiveItem() {
-    let yetToggled = false;
+    let activeId = 0;
 
-    for (let key of Object.keys(this.items)) {
-      let item = this.items[key];
-      if (item.type != "internal") {
-        continue;
-      }
-      if (window.pageYOffset > item.sectionY) {
-        item.dom.classList.add(this.activeMenuItemClassname);
-        yetToggled = true;
-      } else {
-        item.dom.classList.remove(this.activeMenuItemClassname);
-      }
+    if (window.pageYOffset == 0) {
+      // page top
+      activeId = this.items[0].id;
+    } else if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight
+    ) {
+      //page botom
+      activeId = this.items[this.items.length - 1].id;
+    } else {
+      const upStandingSections = this.items.filter(
+        (i) => i.type == "internal" && window.pageYOffset >= i.sectionY
+      );
+      activeId = upStandingSections[upStandingSections.length - 1].id;
     }
+
+    this.items.forEach((i) => {
+      if (i.id == activeId) {
+        i.dom.classList.add(this.activeMenuItemClassname);
+      } else {
+        i.dom.classList.remove(this.activeMenuItemClassname);
+      }
+    });
   }
 
   _tryHref(href) {
@@ -114,8 +123,7 @@ class Menu {
   }
 
   _getSectionYs() {
-    for (let key of Object.keys(this.items)) {
-      let item = this.items[key];
+    for (let item of this.items) {
       if (item.type == "internal") {
         let section = document.querySelector(item.href);
         item["sectionY"] = section.offsetTop;
