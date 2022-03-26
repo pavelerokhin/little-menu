@@ -59,6 +59,7 @@ class Menu {
       let itemDOM = document.createElement("a");
       let id = `menu-item-${order}`;
       itemDOM.classList.add(this.menuItemClassname);
+      itemDOM.href = item.href;
       itemDOM.id = id;
       itemDOM.innerText = item.caption;
       if (order == 0) {
